@@ -21,17 +21,17 @@ func FromContextValue(ctx context.Context) ExtType {
 }
 
 const (
-	KEY_TID           = "tid"
-	KEY_SID           = "sid"
-	KEY_QID           = "qid"
-	KEY_ORG           = "org"
-	KEY_UID           = "uid"
-	KEY_AID           = "aid"
-	KEY_XUID          = "x-uid"
-	KEY_XORG          = "x-org"
-	KEY_XORGRiskLevel = "x-org-risklevel"
-	KEY_ORDER         = "order"
-	KEY_Principle     = "principle"
+	KeyTID           = "tid"
+	KeySID           = "sid"
+	KeyQID           = "qid"
+	KeyORG           = "org"
+	KeyUID           = "uid"
+	KeyAID           = "aid"
+	KeyXUID          = "x-uid"
+	KeyXORG          = "x-org"
+	KeyXORGRiskLevel = "x-org-risklevel"
+	KeyOrder         = "order"
+	KeyPrinciple     = "principle"
 )
 
 type ExtType struct {
@@ -80,9 +80,9 @@ func (e *ExtType) SetValue(key, value string) {
 }
 
 func (e *ExtType) GetIdentityID() string {
-	id := e.GetValue(KEY_XUID)
+	id := e.GetValue(KeyXUID)
 	if len(id) == 0 {
-		id = e.GetValue(KEY_XORG)
+		id = e.GetValue(KeyXORG)
 	}
 	return id
 }
