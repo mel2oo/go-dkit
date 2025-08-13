@@ -18,12 +18,15 @@ func FromContextValue(ctx context.Context) ExtType {
 	if ok {
 		return val
 	}
-	return ExtType{}
+	return New("")
 }
 
 func InjectHeader(ctx context.Context, header http.Header) {
 	extv := FromContextValue(ctx)
-	header.Set("EXT", extv.ToString())
+	exts := extv.ToString()
+	if exts != "" {
+		header.Set("EXT", exts)
+	}
 }
 
 func ExtractHeader(ctx context.Context, header http.Header) context.Context {
