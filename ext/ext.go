@@ -26,6 +26,12 @@ func InjectHeader(ctx context.Context, header http.Header) {
 	header.Set("EXT", extv.ToString())
 }
 
+func ExtractHeader(ctx context.Context, header http.Header) context.Context {
+	exts := header.Get("EXT")
+	extv := New(exts)
+	return WithContextValue(ctx, extv)
+}
+
 const (
 	KeyTID           = "tid"
 	KeySID           = "sid"
