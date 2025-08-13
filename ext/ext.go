@@ -1,9 +1,24 @@
 package ext
 
 import (
+	"context"
 	"strings"
 	"sync"
 )
+
+type ctxKey string
+
+func WithContextValue(ctx context.Context, v ExtType) context.Context {
+	return context.WithValue(ctx, ctxKey("ext"), v)
+}
+
+func FromContextValue(ctx context.Context) ExtType {
+	val, ok := ctx.Value(ctxKey("ext")).(ExtType)
+	if ok {
+		return val
+	}
+	return ExtType{}
+}
 
 const (
 	KEY_TID           = "tid"
