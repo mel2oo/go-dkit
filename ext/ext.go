@@ -2,6 +2,7 @@ package ext
 
 import (
 	"context"
+	"net/http"
 	"strings"
 	"sync"
 )
@@ -18,6 +19,11 @@ func FromContextValue(ctx context.Context) ExtType {
 		return val
 	}
 	return ExtType{}
+}
+
+func InjectHeader(ctx context.Context, header http.Header) {
+	extv := FromContextValue(ctx)
+	header.Set("EXT", extv.ToString())
 }
 
 const (
