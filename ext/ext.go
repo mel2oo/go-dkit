@@ -32,6 +32,36 @@ func InjectHeader(ctx context.Context, header http.Header) {
 func ExtractHeader(ctx context.Context, header http.Header) context.Context {
 	exts := header.Get("EXT")
 	extv := New(exts)
+
+	sid := header.Get("SID")
+	if len(sid) > 0 {
+		extv.SetValue(KeySID, sid)
+	}
+	xtid := header.Get("X-TID")
+	if len(xtid) > 0 {
+		extv.SetValue(KeyTID, xtid)
+	}
+	xuid := header.Get("X-UID")
+	if len(xuid) > 0 {
+		extv.SetValue(KeyXUID, xuid)
+	}
+	xorg := header.Get("X-ORG")
+	if len(xorg) > 0 {
+		extv.SetValue(KeyXORG, xorg)
+	}
+	xorgRiskLevel := header.Get("X-ORG-RISKLEVEL")
+	if len(xorgRiskLevel) > 0 {
+		extv.SetValue(KeyXORGRiskLevel, xorgRiskLevel)
+	}
+	order := header.Get("ORDER")
+	if len(order) > 0 {
+		extv.SetValue(KeyOrder, order)
+	}
+	platformPrinciple := header.Get("platformPrinciple")
+	if len(platformPrinciple) > 0 {
+		extv.SetValue(KeyPrinciple, platformPrinciple)
+	}
+
 	return WithContextValue(ctx, extv)
 }
 
