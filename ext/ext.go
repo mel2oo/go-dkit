@@ -27,6 +27,34 @@ func InjectHeader(ctx context.Context, header http.Header) {
 	if exts != "" {
 		header.Set("EXT", exts)
 	}
+
+	if val := extv.GetValue(KeySID); len(val) > 0 {
+		header.Add("SID", val)
+	}
+
+	if val := extv.GetValue(KeyTID); len(val) > 0 {
+		header.Add("X-TID", val)
+	}
+
+	if val := extv.GetValue(KeyUID); len(val) > 0 {
+		header.Add("X-UID", val)
+	}
+
+	if val := extv.GetValue(KeyORG); len(val) > 0 {
+		header.Add("X-ORG", val)
+	}
+
+	if val := extv.GetValue(KeyXORGRiskLevel); len(val) > 0 {
+		header.Add("X-ORG-RISKLEVEL", val)
+	}
+
+	if val := extv.GetValue(KeyOrder); len(val) > 0 {
+		header.Add("ORDER", val)
+	}
+
+	if val := extv.GetValue(KeyPrinciple); len(val) > 0 {
+		header.Add("PLATFORMPRINCIPLE", val)
+	}
 }
 
 func ExtractHeader(ctx context.Context, header http.Header) context.Context {
@@ -57,7 +85,7 @@ func ExtractHeader(ctx context.Context, header http.Header) context.Context {
 	if len(order) > 0 {
 		extv.SetValue(KeyOrder, order)
 	}
-	platformPrinciple := header.Get("platformPrinciple")
+	platformPrinciple := header.Get("PLATFORMPRINCIPLE")
 	if len(platformPrinciple) > 0 {
 		extv.SetValue(KeyPrinciple, platformPrinciple)
 	}
