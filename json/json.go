@@ -3,6 +3,7 @@ package json
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"strings"
 )
 
@@ -14,6 +15,14 @@ func Marshal(v any) ([]byte, error) {
 
 func Unmarshal(data []byte, v any) error {
 	return json.Unmarshal(data, v)
+}
+
+func NewDecoder(r io.Reader) *json.Decoder {
+	return json.NewDecoder(r)
+}
+
+func NewEncoder(w io.Writer) *json.Encoder {
+	return json.NewEncoder(w)
 }
 
 func MarshalString(v any) string {
