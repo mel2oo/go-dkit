@@ -48,6 +48,7 @@ func Init(cfg *Config) error {
 	if err != nil {
 		return err
 	}
+	logrus.SetLevel(level)
 
 	opts := []Option{
 		WithAppName(cfg.App),
