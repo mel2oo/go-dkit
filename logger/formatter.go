@@ -8,7 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-const TimeFormat = "2006-01-02T15:04:05.000Z0700"
+const TimeFormat = "2006-01-02T15:04:05.000Z07:00"
 
 type SimpleFormatter struct{}
 
