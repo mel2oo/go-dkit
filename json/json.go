@@ -9,6 +9,10 @@ import (
 
 const maxJSONSize = 50 * 1024
 
+func Valid(data []byte) bool {
+	return json.Valid(data)
+}
+
 func Marshal(v any) ([]byte, error) {
 	return json.Marshal(v)
 }
