@@ -36,11 +36,11 @@ func InjectHeader(ctx context.Context, header http.Header) {
 		header.Add("X-TID", val)
 	}
 
-	if val := extv.GetValue(KeyUID); len(val) > 0 {
+	if val := extv.GetValue(KeyXUID); len(val) > 0 {
 		header.Add("X-UID", val)
 	}
 
-	if val := extv.GetValue(KeyORG); len(val) > 0 {
+	if val := extv.GetValue(KeyXORG); len(val) > 0 {
 		header.Add("X-ORG", val)
 	}
 
