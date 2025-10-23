@@ -4,7 +4,6 @@ go 1.24.4
 
 require (
 	github.com/antonfisher/nested-logrus-formatter v1.3.1
-	github.com/drone/envsubst/v2 v2.0.0-20210730161058-179042472c46
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/micro/plugins/v5/config/source/consul v1.0.2
