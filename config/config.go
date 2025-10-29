@@ -18,6 +18,7 @@ func New(filename string, cbRefresh func([]byte) error, opts ...Option) error {
 
 	var src source.Source
 	var err error
+	var encoder = yaml.NewEncoder()
 
 	if len(opt.consulAddress) > 0 {
 		src = consul.NewSource(
@@ -25,9 +26,13 @@ func New(filename string, cbRefresh func([]byte) error, opts ...Option) error {
 			consul.WithToken(opt.consulToken),
 			consul.WithPrefix(filename),
 			consul.StripPrefix(true),
+			source.WithEncoder(encoder),
 		)
 	} else {
-		src = file.NewSource(file.WithPath(filename))
+		src = file.NewSource(
+			file.WithPath(filename),
+			source.WithEncoder(encoder),
+		)
 	}
 
 	config, err := config.NewConfig(
