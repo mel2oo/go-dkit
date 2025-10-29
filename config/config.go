@@ -1,8 +1,8 @@
 package config
 
 import (
+	"github.com/mel2oo/go-dkit/config/consul"
 	"github.com/mel2oo/go-dkit/config/yaml"
-	"github.com/micro/plugins/v5/config/source/consul"
 	"go-micro.dev/v5/config"
 	"go-micro.dev/v5/config/reader"
 	"go-micro.dev/v5/config/reader/json"
