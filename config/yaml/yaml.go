@@ -27,7 +27,7 @@ func NewEncoder() encoder.Encoder {
 	return yamlEncoder{}
 }
 
-var envRe = regexp.MustCompile(`\$\{([^:}]+)(:([^}]*))?\}`)
+var envRe = regexp.MustCompile(`\$\{([^:}]+)(:(.*))?\}`)
 
 func expandEnvDefaults(input string) string {
 	return envRe.ReplaceAllStringFunc(input, func(m string) string {
