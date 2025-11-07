@@ -2,6 +2,7 @@ package xfile
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,7 +10,7 @@ import (
 	_ "image/gif"
 	_ "image/jpeg"
 	_ "image/png"
-	"math"
+	"io"
 	"net/url"
 	"path/filepath"
 	"regexp"
@@ -22,12 +23,12 @@ import (
 var re = regexp.MustCompile(`^(?:file|image):(?P<Name>[^<]*?)(?:\.(?P<Suffix>[^.<]+))?<(?P<Extension>.+)>`)
 
 type File struct {
-	Prefix    string        `json:"prefix"`    // 文件类型: file/image
-	Name      string        `json:"name"`      // 文件名
-	ID        string        `json:"id"`        // 文件id
-	Size      float64       `json:"size"`      // 文件大小
-	Extension string        `json:"extension"` // 文件扩展名
-	Content   *bytes.Reader `json:"content"`   // 文件内容
+	Prefix    string        // 文件类型: file/image
+	Name      string        // 文件名
+	ID        string        // 文件id
+	Size      int64         // 文件大小
+	Extension string        // 文件扩展名
+	Reader    *bytes.Reader // 文件内容
 }
 
 func New(name string, data []byte) *File {
@@ -56,8 +57,8 @@ func New(name string, data []byte) *File {
 		Prefix:    prefix,
 		ID:        hash,
 		Name:      name,
-		Size:      math.Round(float64(len(data))/1024*100) / 100,
-		Content:   bytes.NewReader(data),
+		Size:      int64(len(data)),
+		Reader:    bytes.NewReader(data),
 		Extension: strings.TrimLeft(filepath.Ext(name), "."),
 	}
 }
@@ -94,12 +95,62 @@ func LoadFromRawID(str string) (*File, error) {
 	return f, nil
 }
 
-func (m *File) String() string {
-	return fmt.Sprintf("%s:%s<%s>", m.Prefix, m.Name, m.ID)
+func (f *File) MarshalJSON() ([]byte, error) {
+	var content string
+	if f.Reader != nil {
+		data, err := io.ReadAll(f.Reader)
+		if err != nil {
+			return nil, err
+		}
+
+		content = base64.StdEncoding.EncodeToString(data)
+	}
+
+	return json.Marshal(map[string]any{
+		"prefix":    f.Prefix,
+		"name":      f.Name,
+		"id":        f.ID,
+		"size":      f.Size,
+		"extension": f.Extension,
+		"content":   content,
+	})
 }
 
-func (m *File) Dump() ([]byte, error) {
-	return json.Marshal(m)
+func (f *File) UnmarshalJSON(data []byte) error {
+	aux := struct {
+		Prefix    string `json:"prefix"`
+		Name      string `json:"name"`
+		ID        string `json:"id"`
+		Size      int64  `json:"size"`
+		Extension string `json:"extension"`
+		Content   string `json:"content"`
+	}{}
+
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	f.Prefix = aux.Prefix
+	f.Name = aux.Name
+	f.ID = aux.ID
+	f.Size = aux.Size
+	f.Extension = aux.Extension
+
+	if aux.Content != "" {
+		decoded, err := base64.StdEncoding.DecodeString(aux.Content)
+		if err != nil {
+			return err
+		}
+		f.Reader = bytes.NewReader(decoded)
+	} else {
+		f.Reader = nil
+	}
+
+	return nil
+}
+
+func (m *File) String() string {
+	return fmt.Sprintf("%s:%s<%s>", m.Prefix, m.Name, m.ID)
 }
 
 func (m *File) SetName(name string) {
@@ -108,7 +159,8 @@ func (m *File) SetName(name string) {
 }
 
 func (m *File) SetContent(br *bytes.Reader) {
-	m.Content = br
+	m.Reader = br
+	m.Size = br.Size()
 }
 
 func (m *File) SetNameFromHeader(header string) {
