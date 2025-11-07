@@ -22,12 +22,12 @@ import (
 var re = regexp.MustCompile(`^(?:file|image):(?P<Name>[^<]*?)(?:\.(?P<Suffix>[^.<]+))?<(?P<Extension>.+)>`)
 
 type File struct {
-	Prefix    string  `json:"prefix"`    // 文件类型: file/image
-	Name      string  `json:"name"`      // 文件名
-	ID        string  `json:"id"`        // 文件id
-	Size      float64 `json:"size"`      // 文件大小
-	Extension string  `json:"extension"` // 文件扩展名
-	Content   []byte  `json:"content"`   // 文件内容
+	Prefix    string        `json:"prefix"`    // 文件类型: file/image
+	Name      string        `json:"name"`      // 文件名
+	ID        string        `json:"id"`        // 文件id
+	Size      float64       `json:"size"`      // 文件大小
+	Extension string        `json:"extension"` // 文件扩展名
+	Content   *bytes.Reader `json:"content"`   // 文件内容
 }
 
 func New(name string, data []byte) *File {
@@ -57,7 +57,7 @@ func New(name string, data []byte) *File {
 		ID:        hash,
 		Name:      name,
 		Size:      math.Round(float64(len(data))/1024*100) / 100,
-		Content:   data,
+		Content:   bytes.NewReader(data),
 		Extension: strings.TrimLeft(filepath.Ext(name), "."),
 	}
 }
@@ -107,8 +107,8 @@ func (m *File) SetName(name string) {
 	m.Extension = strings.TrimLeft(filepath.Ext(m.Name), ".")
 }
 
-func (m *File) SetContent(data []byte) {
-	m.Content = data
+func (m *File) SetContent(br *bytes.Reader) {
+	m.Content = br
 }
 
 func (m *File) SetNameFromHeader(header string) {
