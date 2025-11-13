@@ -5,11 +5,11 @@ import (
 	"os"
 )
 
-func Mkdir(path string) error {
+func Mkdir(path string, mode os.FileMode) error {
 	stat, err := os.Stat(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return os.MkdirAll(path, os.ModePerm)
+			return os.MkdirAll(path, mode)
 		}
 		return err
 	}
@@ -21,14 +21,14 @@ func Mkdir(path string) error {
 	return nil
 }
 
-func MkdirIf(path string, uid, gid int) error {
+func MkdirIf(path string, mode os.FileMode, uid, gid int) error {
 	stat, err := os.Stat(path)
 	if err != nil {
 		if !os.IsNotExist(err) {
 			return err
 		}
 
-		if err := os.MkdirAll(path, os.ModePerm); err != nil {
+		if err := os.MkdirAll(path, mode); err != nil {
 			return fmt.Errorf("failed to create directory %s: %w", path, err)
 		}
 	}
@@ -37,7 +37,7 @@ func MkdirIf(path string, uid, gid int) error {
 		return fmt.Errorf("path exists but is not a directory: %s", path)
 	}
 
-	os.Chmod(path, os.ModePerm)
+	os.Chmod(path, mode)
 	os.Chown(path, uid, gid)
 	return nil
 }
