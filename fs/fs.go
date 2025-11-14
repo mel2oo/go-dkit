@@ -31,10 +31,10 @@ func MkdirIf(path string, mode os.FileMode, uid, gid int) error {
 		if err := os.MkdirAll(path, mode); err != nil {
 			return fmt.Errorf("failed to create directory %s: %w", path, err)
 		}
-	}
-
-	if !stat.IsDir() {
-		return fmt.Errorf("path exists but is not a directory: %s", path)
+	} else {
+		if !stat.IsDir() {
+			return fmt.Errorf("path exists but is not a directory: %s", path)
+		}
 	}
 
 	os.Chmod(path, mode)
