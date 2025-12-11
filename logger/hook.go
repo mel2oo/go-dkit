@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/mel2oo/go-dkit/ext"
 	"github.com/sirupsen/logrus"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -72,6 +73,11 @@ func (hook *Hook) Fire(entry *logrus.Entry) error {
 		if spanCtx.IsValid() {
 			entry.Data["tid"] = spanCtx.TraceID().String()
 			entry.Data["span_id"] = spanCtx.SpanID().String()
+		} else {
+			extv := ext.FromContextValue(ctx)
+			if len(extv.GetValue(ext.KeyTID)) > 0 {
+				entry.Data["tid"] = extv.GetValue(ext.KeyTID)
+			}
 		}
 	}
 

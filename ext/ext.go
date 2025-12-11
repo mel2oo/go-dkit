@@ -122,7 +122,7 @@ func New(ext string) ExtType {
 		if len(kv) != 2 {
 			continue
 		}
-		e.kvs[kv[0]] = kv[1]
+		e.kvs[strings.ToLower(kv[0])] = kv[1]
 	}
 	return e
 }
