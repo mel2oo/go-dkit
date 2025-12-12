@@ -74,7 +74,6 @@ func New(filename string, cbRefresh func([]byte) error, opts ...Option) error {
 
 			if err := cbRefresh(v.Bytes()); err != nil {
 				logrus.Errorf("refresh config error: %s", err)
-				return
 			}
 		}
 	}()
