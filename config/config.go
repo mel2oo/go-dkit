@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/mel2oo/go-dkit/config/consul"
 	"github.com/mel2oo/go-dkit/config/yaml"
+	"github.com/sirupsen/logrus"
 	"go-micro.dev/v5/config"
 	"go-micro.dev/v5/config/reader"
 	"go-micro.dev/v5/config/reader/json"
@@ -63,6 +64,7 @@ func New(filename string, cbRefresh func([]byte) error, opts ...Option) error {
 		for {
 			v, err := watcher.Next()
 			if err != nil {
+				logrus.Errorf("watch config error: %s", err)
 				return
 			}
 
@@ -71,6 +73,7 @@ func New(filename string, cbRefresh func([]byte) error, opts ...Option) error {
 			}
 
 			if err := cbRefresh(v.Bytes()); err != nil {
+				logrus.Errorf("refresh config error: %s", err)
 				return
 			}
 		}
