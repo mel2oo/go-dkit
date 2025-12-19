@@ -21,7 +21,7 @@ func FromContextValue(ctx context.Context) ExtType {
 	return New("")
 }
 
-func InjectHeader(ctx context.Context, header http.Header) {
+func InjectHeader(ctx context.Context, header http.Header) ExtType {
 	extv := FromContextValue(ctx)
 	exts := extv.ToString()
 	if exts != "" {
@@ -55,9 +55,11 @@ func InjectHeader(ctx context.Context, header http.Header) {
 	if val := extv.GetValue(KeyPrinciple); len(val) > 0 {
 		header.Add("PLATFORMPRINCIPLE", val)
 	}
+
+	return extv
 }
 
-func ExtractHeader(ctx context.Context, header http.Header) context.Context {
+func ExtractHeader(ctx context.Context, header http.Header) (ExtType, context.Context) {
 	exts := header.Get("EXT")
 	extv := New(exts)
 
@@ -89,8 +91,12 @@ func ExtractHeader(ctx context.Context, header http.Header) context.Context {
 	if len(platformPrinciple) > 0 {
 		extv.SetValue(KeyPrinciple, platformPrinciple)
 	}
+	language := header.Get("Accept-Language")
+	if len(language) > 0 {
+		extv.SetValue(KeyLanguage, language)
+	}
 
-	return WithContextValue(ctx, extv)
+	return extv, WithContextValue(ctx, extv)
 }
 
 const (
@@ -105,6 +111,7 @@ const (
 	KeyXORGRiskLevel = "x-org-risklevel"
 	KeyOrder         = "order"
 	KeyPrinciple     = "principle"
+	KeyLanguage      = "language"
 )
 
 type ExtType struct {

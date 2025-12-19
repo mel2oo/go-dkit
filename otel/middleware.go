@@ -16,7 +16,7 @@ type Filters struct {
 	IncludePathOnlys []string `yaml:"include_path_onlys" json:"include_path_onlys,omitempty"`
 }
 
-func OTel(serverName string, filters Filters) gin.HandlerFunc {
+func Middleware(serverName string, filters Filters) gin.HandlerFunc {
 	return otelgin.Middleware(
 		serverName,
 		otelgin.WithMeterProvider(Standard().MeterProvider),
