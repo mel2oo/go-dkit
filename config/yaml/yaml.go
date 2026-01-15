@@ -37,7 +37,7 @@ func expandEnvDefaults(input string) string {
 		if len(sub) >= 4 {
 			def = sub[3]
 		}
-		if val, ok := os.LookupEnv(name); ok && val != "" {
+		if val, ok := os.LookupEnv(name); ok {
 			return val
 		}
 		return def
