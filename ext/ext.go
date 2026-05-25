@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strings"
 	"sync"
+
+	"go.opentelemetry.io/otel/trace"
 )
 
 type ctxKey string
@@ -94,6 +96,14 @@ func ExtractHeader(ctx context.Context, header http.Header) (ExtType, context.Co
 	language := header.Get("Accept-Language")
 	if len(language) > 0 {
 		extv.SetValue(KeyLanguage, language)
+	}
+
+	tid := extv.GetValue(KeyTID)
+	if len(tid) == 0 {
+		spanCtx := trace.SpanContextFromContext(ctx)
+		if spanCtx.IsValid() {
+			extv.SetValue(KeyTID, spanCtx.TraceID().String())
+		}
 	}
 
 	return extv, WithContextValue(ctx, extv)

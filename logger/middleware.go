@@ -10,8 +10,7 @@ import (
 
 func Middleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		extv, ctx := ext.ExtractHeader(c.Request.Context(), c.Request.Header)
-		c.Request = c.Request.WithContext(ctx)
+		extv := ext.FromContextValue(c.Request.Context())
 
 		logrus.WithContext(c.Request.Context()).Infof("restful request entry, client: %s, method: %s, url: %s, ext: %s",
 			c.ClientIP(), c.Request.Method, c.Request.URL, extv.ToString())
