@@ -13,7 +13,7 @@ func Middleware() gin.HandlerFunc {
 		extv := ext.FromContextValue(c.Request.Context())
 
 		logrus.WithContext(c.Request.Context()).Infof("restful request entry, client: %s, method: %s, url: %s, ext: %s",
-			c.ClientIP(), c.Request.Method, c.Request.URL, extv.ToString())
+			strings.TrimSpace(c.Request.RemoteAddr), c.Request.Method, c.Request.URL, extv.ToString())
 
 		c.Next()
 
